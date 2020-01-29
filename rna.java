@@ -4,15 +4,8 @@ import tester.*;
 
 interface ILoString {
   ILoLoString translate();
-  boolean stopU();
-  boolean stopUA();
-  boolean stopUG();
-  boolean stopUAG();
-  boolean stopUAA();
-  boolean stopUGA();
-  boolean stopIncomplete();
-  ILoString listAcc();
-  ILoString allBases();
+  String listToString();
+  ILoLoString listProteins();
 }
 // (A, U, G, G, A, U, G, A, A, U, U, G, EMPTY)
 // "AUGGAUGGAAUUG", EMPTY
@@ -31,156 +24,57 @@ class ConsLoString implements ILoString {
     this.rest = rest;
   }
 
-  public ILoLoString translate(ConsLoString c) {
-  }
- 
-  public ILoString allBases() {
-    if(this.equals(new MtLoString())) {
-      return "";
-    } else {
-      return new ConsLoString(this.first + this.rest.allBases(), new MtLoString());
-    }
-    }
-
-      
-      
-    /*
-    if(this.stopU() || this.stopIncomplete()) {
-      return new ConsLoLoString(this.listAcc(c), new MtLoLoString());
-      }
-    else this.listAcc(c);
-    //return new ConsLoLoString(accumulator, MtLoLoString);
-    return null;
-    }
-  // stops if incomplete(i.e. run out of strings) or reach stop codon
-
-  public boolean stopU() {
-    if(this.first.equals("U")) {
-      return this.rest.stopUA()
-          ||  this.rest.stopUG();
-    }
-    else {
-      return false;
-    }
+  public ILoLoString translate() {
+   ILoString codons = this.stringToList3(listToString());
+   
+   return codons.listProteins();
+   }
+ // UAG, UAA or UGA
+   public ILoLoString listProteins(ILoLoString p) {
+    return new ConsLoLoString(this.first.protein, this.rest()); 
+   }
+     
+  ILoString protein() {
+     if(this.first.equals("UAG") || this.first.equals("UAA") || this.first.equals("UGA")) {
+      return p && this.rest.listProteins(); 
+     }
+     else {
+       return new ConsLoLoString(this.first, this.rest.protein());
+   }
+   
+  public String listToString() {
+    return this.first + this.rest.listToString();
   }
   
-  public boolean stopUA() {
-    if(this.first.equals("A")) {
-      return this.rest.stopUAA()
-          || this.rest.stopUAG();
+  public ILoString stringToList3(String str) {
+    if(str.length() % 3 == 0 && str.length() != 0) {
+     return new ConsLoString(str.substring(0, 3), this.stringToList3(str.substring(3)));
+    }
+    else if(str.length() % 3 != 0) {
+      int n = str.length() % 3;
+      return this.stringToList3(str.substring(0, (str.length() - n)));
     }
     else {
-      return false;
+      return new MtLoString();
     }
   }
-
-  
-  public boolean stopUG() {
-    if(this.first.equals("G")) {
-      return this.rest.stopUGA();
-    }
-    else {
-      return false;
-    }
-  }
-
-  public boolean stopUAG() {
-    if(this.first.equals("G")) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  public boolean stopUAA() {
-    if(this.first.equals("A")) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  public boolean stopUGA() {
-    if(this.first.equals("A")) {
-      return true;
-    }
-    else {
-      return false; 
-      }
-  }
-
-  public boolean stopIncomplete() {
-    return false;
-  }
-
-  // ("AUG", "UUG")
-  public ConsLoString listAcc(ConsLoString c) {
-    if(c.first.length() == 3) {
-      return new ConsLoString(this.first, c);
-    }
-    else {
-      return new ConsLoString ((c.first + this.first), c.rest);
-    }
-  }
- 
 }
-*/
+
+  
 // (("AUG", "UUG"), ("AUG", "UUG")
 class MtLoString implements ILoString {
   MtLoString() {}
 
   public ILoLoString translate() {
+    ;
+  }
+  
+  public String listToString() {
     return "";
   }
 
-  @Override
-  public boolean stop() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean stopU() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean stopUA() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean stopUG() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean stopUAG() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean stopUAA() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean stopUGA() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public boolean stopIncomplete() {
-    // TODO Auto-generated method stub
-    return false;
+  public ILoLoString listProteins() {
+    return new MtLoLoString();
   }
 }
 
