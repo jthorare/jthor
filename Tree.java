@@ -39,11 +39,12 @@ class Stem implements ITree {
   }
 
   public WorldImage draw() {
-    return new AboveAlignImage(AlignModeX.CENTER, new VisiblePinholeImage(this.tree.draw()),
-        new VisiblePinholeImage(new LineImage(
-            new Posn((int) Math.round((this.length * Math.cos(Math.toRadians(this.theta)))),
-                (int) Math.round((this.length * Math.sin(Math.toRadians(this.theta))))),
-            Color.BLACK).movePinhole(0, -(this.length / 2))));
+    return new OverlayImage(this.tree.draw(), new LineImage(new Posn(0, -this.length), Color.BLACK).movePinhole(0, -this.length/ 2));
+        //new OverlayImage(this.tree.draw(),
+       // new LineImage(
+         //   new Posn((int) Math.round((this.length * Math.cos(Math.toRadians(this.theta)))),
+            //    (int) Math.round((this.length * Math.sin(Math.toRadians(this.theta))))),
+        //    Color.BLACK).movePinhole(0, -(this.length / 2)));
   }
 }
 
@@ -69,8 +70,9 @@ class Branch implements ITree {
   }
 
   public WorldImage draw() {
-    return new OverlayImage(AlignModeY.BOTTOM,(new RotateImage(this.drawBranchLeft(), 90 - leftTheta)),
-        new RotateImage(this.drawBranchRight(), 90 - rightTheta));
+    return new OverlayImage(
+        new RotateImage(drawBranchLeft().movePinhole(0, leftLength), 90 - this.leftTheta),
+        new RotateImage(drawBranchRight().movePinhole(0, rightLength), 90 - this.rightTheta));
   }
 
   WorldImage drawBranchLeft() {
@@ -91,7 +93,7 @@ class ExamplesTree {
   ITree tree1 = new Branch(30, 30, 135, 40, new Leaf(10, Color.RED), new Leaf(15, Color.BLUE));
   ITree tree2 = new Branch(30, 30, 115, 65, new Leaf(15, Color.GREEN), new Leaf(8, Color.ORANGE));
   ITree tree3 = new Stem(40, 75, new Leaf(15, Color.BLUE));
-  ITree tree4 = new Branch(30, 30, 225,45, new Leaf(15, Color.GREEN), new Leaf(8, Color.ORANGE));
+  ITree tree4 = new Branch(30, 30, 225, 45, new Leaf(15, Color.GREEN), new Leaf(8, Color.ORANGE));
   ITree tree1Stem = new Stem(40, 90, tree1);
   ITree tree2Stem = new Stem(50, 90, tree2);
 
@@ -107,6 +109,6 @@ class ExamplesTree {
   boolean testDrawTree(Tester t) {
     WorldCanvas c = new WorldCanvas(500, 500);
     WorldScene s = new WorldScene(500, 500);
-    return c.drawScene(s.placeImageXY(tree4.draw(), 250, 250)) && c.show();
+    return c.drawScene(s.placeImageXY(tree1Stem.draw(), 250, 250)) && c.show();
   }
 }
