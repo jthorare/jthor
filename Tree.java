@@ -39,12 +39,13 @@ class Stem implements ITree {
   }
 
   public WorldImage draw() {
-    return new OverlayImage(this.tree.draw(), new LineImage(new Posn(0, -this.length), Color.BLACK).movePinhole(0, -this.length/ 2));
-        //new OverlayImage(this.tree.draw(),
-       // new LineImage(
-         //   new Posn((int) Math.round((this.length * Math.cos(Math.toRadians(this.theta)))),
-            //    (int) Math.round((this.length * Math.sin(Math.toRadians(this.theta))))),
-        //    Color.BLACK).movePinhole(0, -(this.length / 2)));
+     if(this.theta > 90) {
+      return  new RotateImage (new OverlayImage(this.tree.draw(),
+       new LineImage(new Posn(0, -this.length), Color.BLACK).movePinhole(0, -this.length / 2)), - (90 - this.theta));
+      } else {
+        return new RotateImage (new OverlayImage(this.tree.draw(),
+          new LineImage(new Posn(0, -this.length), Color.BLACK).movePinhole(0, -this.length / 2)), 90 - this.theta);
+      }
   }
 }
 
@@ -94,6 +95,7 @@ class ExamplesTree {
   ITree tree2 = new Branch(30, 30, 115, 65, new Leaf(15, Color.GREEN), new Leaf(8, Color.ORANGE));
   ITree tree3 = new Stem(40, 75, new Leaf(15, Color.BLUE));
   ITree tree4 = new Branch(30, 30, 225, 45, new Leaf(15, Color.GREEN), new Leaf(8, Color.ORANGE));
+  ITree tree5 = new Branch(40, 50, 150, 30, this.tree1, this.tree2);
   ITree tree1Stem = new Stem(40, 90, tree1);
   ITree tree2Stem = new Stem(50, 90, tree2);
 
@@ -109,6 +111,6 @@ class ExamplesTree {
   boolean testDrawTree(Tester t) {
     WorldCanvas c = new WorldCanvas(500, 500);
     WorldScene s = new WorldScene(500, 500);
-    return c.drawScene(s.placeImageXY(tree1Stem.draw(), 250, 250)) && c.show();
+    return c.drawScene(s.placeImageXY(tree5.draw(), 250, 250)) && c.show();
   }
 }
